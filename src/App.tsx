@@ -1,57 +1,42 @@
-import React, {useState} from 'react';
-import Display from "./Component/Display/Display";
+import React from 'react';
 import Button from "./Component/Button/Button";
 import './App.css';
 import Input from "./Component/Input/Input";
-
-type stateType = {
-    startValue: number
-    maxValue: number
-}
+import {useDispatch, useSelector} from "react-redux";
+import {
+    changeStartValueAC,
+    changeMaxValueAC,
+    setCounterValueAC,
+    StateType,
+    incrementCounterAC, resetCounterAC
+} from "./redux/counter-reducer";
 
 function App() {
-    const store: stateType = {
-        startValue: 0,
-        maxValue: 0,
+    type AppRootStateType = {
+        counterState: StateType
     }
+    const counterState = useSelector<AppRootStateType, StateType>(state => state.counterState)
+    const dispatch = useDispatch()
 
-    const [count, setCount] = useState<number>(0)
-
-    const [state, setState] = useState<stateType>(store)
-    const [countMax, setCountMax] = useState<number>(0)
-    const [error, setError] = useState<boolean>(false)
-
-
-
-
-    const countInc = () => {
-        let inc = count + 1
-        setCount(inc)
+    const changeInputStart = (value: number) => {
+        const action = changeStartValueAC(value)
+        dispatch(action)
     }
-    const resetCount = () => {
-        setCount(state.startValue)
+    const changeInputMax = (value: number) => {
+        const action = changeMaxValueAC(value)
+        dispatch(action)
     }
-
-    const valueCheck = () => {
-        if (state.startValue >= state.maxValue || state.startValue < 0) {
-            setError(true)
-        } else {
-            setError(false)
-        }
+    const setValue = () => {
+        const action = setCounterValueAC()
+        dispatch(action)
     }
-    const setStartInputValue = (value: number) => {
-        state.startValue = value
-        setState({...state})
-        valueCheck()
+    const incValue = () => {
+        const action = incrementCounterAC()
+        dispatch(action)
     }
-    const setMaxInputValue = (value: number) => {
-        state.maxValue = value
-        setState({...state})
-        valueCheck()
-    }
-    const applySetting = () => {
-        setCount(state.startValue)
-        setCountMax(state.maxValue)
+    const resetValue = () => {
+        const action = resetCounterAC()
+        dispatch(action)
     }
 
     return (
@@ -59,23 +44,39 @@ function App() {
             <div className='wrapper'>
                 <div className='display'>
                     <div className='displayInput'>
-                        <Input error={error} title={'start value'} value={state.startValue} inputType={'number'}
-                               changeInputValue={setStartInputValue}/>
-                        <Input error={error} title={'max value'} value={state.maxValue} inputType={'number'}
-                               changeInputValue={setMaxInputValue}/>
+                        <Input error={counterState.error}
+                               title={'start value'}
+                               value={counterState.changeStartValue}
+                               inputType={'number'}
+                               changeInputValue={changeInputStart}/>
+
+                        <Input error={counterState.error}
+                               title={'max value'}
+                               value={counterState.changeMaxValue}
+                               inputType={'number'}
+                               changeInputValue={changeInputMax}/>
                     </div>
                 </div>
                 <div className='block-btn'>
-                    <Button title={'set'} callBack={applySetting} disable={error}/>
+                    <Button title={'set'} callBack={setValue} disable={counterState.setDisable}/>
                 </div>
             </div>
             <div className='wrapper'>
-                <div className={count === countMax ? 'display red' : 'display'}>
-                    {count}
+                <div className={
+                    counterState.counter.startValue === counterState.counter.maxValue
+                        ? 'display red'
+                        : 'display'}>
+                    {counterState.counter.startValue}
                 </div>
                 <div className='block-btn'>
-                    <Button title={'inc'} callBack={countInc} disable={count === countMax}/>
-                    <Button title={'reset'} callBack={resetCount} disable={count === state.startValue}/>
+                    <Button title={'inc'}
+                            callBack={incValue}
+                            disable={counterState.counter.startValue === counterState.counter.maxValue ||
+                            typeof counterState.counter.startValue === 'string'}/>
+                    <Button title={'reset'}
+                            callBack={resetValue}
+                            disable={counterState.counter.startValue === counterState.changeStartValue ||
+                            typeof counterState.counter.startValue === 'string'}/>
                 </div>
             </div>
         </div>

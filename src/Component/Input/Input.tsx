@@ -1,15 +1,12 @@
 import React, {ChangeEvent} from 'react';
 import s from './Input.module.css'
 
-
-
 type InputPropType = {
     error?: boolean
     title: string
     value: number
     inputType: string
     changeInputValue: (inputValue:number) => void
-
 }
 
 function Input(props:InputPropType) {
