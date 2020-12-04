@@ -48,22 +48,24 @@ const initialState: StateType = {
 export const counterReducer = (state: StateType = initialState, action: actionType) => {
     switch (action.type) {
         case 'CHANGE-INPUT-START-VALUE': {
-            debugger
+            const checkedValue = action.value < 0 || action.value >= state.changeMaxValue ? true : false;
             return {
                 ...state,
                 counter: {...state.counter, startValue: 'set value please'},
                 changeStartValue: action.value,
-                setDisable: action.value > state.changeMaxValue ? true : false,
-                error: action.value < 0 || action.value >= state.changeMaxValue  ? true : false
+                setDisable: checkedValue,
+                error: checkedValue
             }
         }
         case 'CHANGE-INPUT-MAX-VALUE': {
+            const checkedMaxValue =
+                action.value < 0 || action.value <= state.changeStartValue ||state.changeStartValue < 0 ? true : false;
             return {
                 ...state,
                 counter: {...state.counter, startValue: 'set value please'},
                 changeMaxValue: action.value,
-                setDisable: action.value > state.changeStartValue ? false : true,
-                error: action.value < 0 || action.value <= state.changeStartValue  ? true : false
+                setDisable: checkedMaxValue,
+                error: checkedMaxValue
             }
         }
         case 'SET-INPUT-VALUE': {
