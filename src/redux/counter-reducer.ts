@@ -48,7 +48,7 @@ const initialState: StateType = {
 export const counterReducer = (state: StateType = initialState, action: actionType) => {
     switch (action.type) {
         case 'CHANGE-INPUT-START-VALUE': {
-            const checkedValue = action.value < 0 || action.value >= state.changeMaxValue ? true : false;
+            const checkedValue = action.value < 0 || action.value >= state.changeMaxValue;
             return {
                 ...state,
                 counter: {...state.counter, startValue: 'set value please'},
@@ -59,7 +59,7 @@ export const counterReducer = (state: StateType = initialState, action: actionTy
         }
         case 'CHANGE-INPUT-MAX-VALUE': {
             const checkedMaxValue =
-                action.value < 0 || action.value <= state.changeStartValue ||state.changeStartValue < 0 ? true : false;
+                action.value < 0 || action.value <= state.changeStartValue ||state.changeStartValue < 0;
             return {
                 ...state,
                 counter: {...state.counter, startValue: 'set value please'},
